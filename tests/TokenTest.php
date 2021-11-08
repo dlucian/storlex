@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Database;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -9,6 +10,11 @@ use PHPUnit\Framework\TestCase;
  */
 class TokenTest extends TestCase
 {
+    public function setUp(): void
+    {
+        Database::execute('CREATE TABLE IF NOT EXISTS tokens (token VARCHAR(100) NOT NULL)');
+    }
+
     /** @test */
     public function itCreatesAToken()
     {

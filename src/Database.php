@@ -19,7 +19,7 @@ class Database
      *
      * @param string $query
      * @param array<string,mixed> $params
-     * @return array<mixed> Resulted rows
+     * @return array<int,array<string,mixed>> Resulted rows
      */
     public static function query(string $query, array $params = []): ?array
     {
@@ -60,7 +60,6 @@ class Database
                 $_ENV['DB_DSN'],
                 $_ENV['DB_USERNAME'],
                 $_ENV['DB_PASSWORD'],
-                array(PDO::ATTR_PERSISTENT => true)
             );
             self::$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             self::$conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
