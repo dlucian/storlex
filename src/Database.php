@@ -33,6 +33,21 @@ class Database
     }
 
     /**
+     * Execute a database statement
+     *
+     * @param string $query The statement to run
+     * @param array<string,mixed> $params The parameters to bind to the statement
+     * @return bool True if successful, false on error
+     */
+    public static function execute(string $query, array $params = []): bool
+    {
+        self::init();
+
+        $stmt = self::$conn->prepare($query);
+        return $stmt->execute($params);
+    }
+
+    /**
      * Inialize the database connection
      * if it's not already initialized
      *
