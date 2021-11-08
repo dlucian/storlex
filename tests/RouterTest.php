@@ -62,4 +62,21 @@ final class RouterTest extends TestCase
         $this->assertEquals(null, $router->match('/sõmethiñg'));
         $this->assertEquals(null, $router->match('/something'));
     }
+
+    /** @test */
+    public function itCanHandleAnIncomingRequest()
+    {
+        // Arrange
+        $callback = function () {
+            return 'I am content';
+        };
+
+        $router = new Router();
+        $router->get('/', $callback);
+
+        // Act
+        $response = $router->handle('/');
+
+        $this->assertEquals('I am content', $response);
+    }
 }

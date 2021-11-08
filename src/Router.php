@@ -47,4 +47,10 @@ class Router
         }
         return null;
     }
+
+    public function handle(string $url): string
+    {
+        $handler = $this->match($url);
+        return $handler ? $handler() : '404';
+    }
 }
