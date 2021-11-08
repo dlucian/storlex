@@ -2,8 +2,6 @@
 
 namespace App;
 
-use PDO;
-
 /**
  * Token handling class
  *
