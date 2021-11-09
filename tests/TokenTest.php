@@ -20,55 +20,48 @@ class TokenTest extends TestCase
     /** @test */
     public function itCreatesAToken()
     {
-        // Arrange
-        $token = new Token();
-
         // Act
-        $token->grant('foo');
+        (new Token('foo'))->grant();
 
         // Assert
-        $this->assertTrue($token->isValid('foo'));
+        $this->assertTrue((new Token('foo'))->isValid());
     }
 
     /** @test */
     public function itValidatesAPreviouslyCreatedToken()
     {
         // Arrange
-        $token = new Token();
+        $token = new Token('bar');
 
         // Act
-        $token->grant('bar');
+        $token->grant();
 
         // Assert
-        $this->assertFalse($token->isValid('foo'));
+        $this->assertFalse((new Token('foo'))->isValid());
     }
 
     /** @test */
     public function itRevokesAToken()
     {
         // Arrange
-        $token = new Token();
-        $token->grant('baz');
-        $this->assertTrue($token->isValid('baz'));
+        (new Token('baz'))->grant();
+        $this->assertTrue((new Token('baz'))->isValid());
 
         // Act
-        $token->revoke('baz');
+        (new Token('baz'))->revoke();
 
         // Assert
-        $this->assertFalse($token->isValid('baz'));
+        $this->assertFalse((new Token('baz'))->isValid());
     }
 
     /** @test */
     public function itCanGrantATokenThatWasAlreadyGranted()
     {
-        // Arrange
-        $token = new Token();
-
         // Act
-        $token->grant('fooBar');
-        $token->grant('fooBar');
+        (new Token('fooBar'))->grant();
+        (new Token('fooBar'))->grant();
 
         // Assert
-        $this->assertTrue($token->isValid('fooBar'));
+        $this->assertTrue((new Token('fooBar'))->isValid());
     }
 }
