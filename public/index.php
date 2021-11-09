@@ -5,8 +5,6 @@
  */
 
 use App\Config;
-use App\Controllers\HomeController;
-use App\Controllers\TokensController;
 use App\Request;
 use App\Response;
 use App\Router;
@@ -25,7 +23,10 @@ if (!empty($_SERVER['REQUEST_URI']) && !empty($_SERVER['REQUEST_METHOD'])) {
         return (new HomeController())->index();
     });
     $router->post('/token', function() use ($request) {
-        return (new TokensController())->grant($request);
+        return (new \App\Controllers\TokensController())->grant($request);
+    });
+    $router->post('/original', function() use ($request) {
+        return (new \App\Controllers\OriginalController())->upload($request);
     });
     Response::render(
         $router->handle($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI'])

@@ -11,7 +11,7 @@ use App\Token;
  *
  * Handles granting and revoking tokens
  */
-class TokensController
+class TokensController extends BaseController
 {
     /**
      * Grant access to a token
@@ -33,11 +33,7 @@ class TokensController
 
         (new Token($inputToken))->grant();
 
-        return new Response(
-            200,
-            ['success' => true],
-            ['Content-Type' => 'application/json']
-        );
+        return $this->successJson();
     }
 
     /**
@@ -59,11 +55,7 @@ class TokensController
 
         (new Token($inputToken))->revoke();
 
-        return new Response(
-            200,
-            ['success' => true],
-            ['Content-Type' => 'application/json']
-        );
+        return $this->successJson();
     }
 
     protected function validateInput(Request $request): ?Response

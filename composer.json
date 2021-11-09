@@ -44,6 +44,9 @@
             "phpunit"
         ],
         "debug": "php -dxdebug.mode=debug ./vendor/bin/phpunit",
-        "coverage": "php -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text"
+        "coverage": "php -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text",
+        "post-autoload-dump": [
+            "mkdir -pv storage/original || true"
+        ]
     }
 }

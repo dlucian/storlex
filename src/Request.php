@@ -16,7 +16,7 @@ class Request
     /** @var array<string,string> */
     protected $cookie;
 
-    /** @var array<string,string> */
+    /** @var array<string,array<string,string|int>> */
     protected $files;
 
     /**
@@ -24,7 +24,7 @@ class Request
      * @param array<string,string> $get
      * @param array<string,string> $post
      * @param array<string,string> $cookie
-     * @param array<string,string> $files
+     * @param array<string,array<string,string|int>> $files
      */
     public function __construct(
         array $server = [],
@@ -97,11 +97,25 @@ class Request
     }
 
     /**
-     * @return array<string,string>
+     * @return array<string,array<string,string|int>>
      */
     public function getFiles(): array
     {
         return $this->files;
+    }
+
+    /**
+     * @param string $file
+     * @return array<string,string|int>
+     */
+    public function getFile(string $file): array
+    {
+        return [
+            'name' => $this->files[$file]['name'],
+            'file' => $this->files[$file]['tmp_name'],
+            'type' => $this->files[$file]['type'],
+            'size' => $this->files[$file]['size'],
+        ];
     }
 
     /**
