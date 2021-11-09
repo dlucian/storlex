@@ -21,7 +21,7 @@ final class RouterTest extends TestCase
         $router->get('/', $callback);
 
         // Assert
-        $this->assertEquals($callback(), $router->match('/')());
+        $this->assertEquals($callback(), $router->match('/')['callback']());
     }
 
     /** @test */
@@ -45,8 +45,8 @@ final class RouterTest extends TestCase
         $router->get('/unmatched/{id}', $callbackUnmatched);
 
         // Assert
-        $this->assertEquals($callbackUserShow(1), $router->match('/users/1')(1));
-        $this->assertEquals($callbackImageShow(2), $router->match('/image/john')(2));
+        $this->assertEquals($callbackUserShow(1), $router->match('/users/1')['callback'](1));
+        $this->assertEquals($callbackImageShow(2), $router->match('/image/john')['callback'](2));
         $this->assertEquals(null, $router->match('/unmatched/'));
     }
 
@@ -68,8 +68,8 @@ final class RouterTest extends TestCase
         $router->post('/something', $callbackPost);
 
         // Assert
-        $this->assertEquals($callbackGet(), $router->match('/something', 'GET')());
-        $this->assertEquals($callbackPost(), $router->match('/something', 'POST')());
+        $this->assertEquals($callbackGet(), $router->match('/something', 'GET')['callback']());
+        $this->assertEquals($callbackPost(), $router->match('/something', 'POST')['callback']());
     }
 
     /** @test */

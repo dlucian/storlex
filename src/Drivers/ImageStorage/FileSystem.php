@@ -29,6 +29,18 @@ class FileSystem extends ImageStorage
     }
 
     /**
+     * Retrieve an image from storage and return it.
+     *
+     * @param string $name Image file name
+     * @return ?string The image binary data
+     */
+    public function get(string $name): ?string
+    {
+        $storagePath = $this->getStoragePath($name);
+        return file_get_contents($storagePath) ?: null;
+    }
+
+    /**
      * Generate a path to the image.
      *
      * To keep OS efficiency, we are avoiding saving all the images

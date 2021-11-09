@@ -28,6 +28,9 @@ if (!empty($_SERVER['REQUEST_URI']) && !empty($_SERVER['REQUEST_METHOD'])) {
     $router->post('/original', function() use ($request) {
         return (new \App\Controllers\OriginalController())->upload($request);
     });
+    $router->get('/img/{image}', function($params) use ($request) {
+        return (new \App\Controllers\ImagesController())->retrieve($params['image'], $request);
+    });
     Response::render(
         $router->handle($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI'])
     );

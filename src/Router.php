@@ -60,25 +60,69 @@ class Router
      *
      * @param string $path
      * @param string $method
-     * @return Closure|null
+     * @return array<string,string|Closure|array<string,string|int>>|null
      */
-    public function match(string $path, string $method = 'GET'): ?Closure
+    public function match(string $path, string $method = 'GET'): ?array
     {
         if (!isset($this->routes[$method])) {
             return null;
         }
+
         if (array_key_exists($path, $this->routes[$method])) {
-            return $this->routes[$method][$path];
+            return [
+                'callback' => $this->routes[$method][$path],
+                'route' => $path,
+                'params' => []
+            ];
         }
 
         foreach ($this->routes[$method] as $pathSearch => $handler) {
-            $pathRegexp = preg_replace('/({)([a-zA-Z0-9]+)(})/', '(?<$2>.+)', $pathSearch);
-            if (preg_match('#^' . $pathRegexp . '$#', $path)) {
-                return $handler;
+            if ($params = $this->matchRouteWithParameters($path, $pathSearch)) {
+                return [
+                    'callback' => $handler,
+                    'route' => $pathSearch,
+                    'params' => $params,
+                ];
             }
         }
 
         return null;
+    }
+
+    /**
+     * Match a route with named parameters
+     *
+     * @param string $path The path to match
+     * @param string $pathSearch The path to search for
+     * @return array<string,string>|null The parameters or null if no match
+     */
+    protected function matchRouteWithParameters(string $path, string $pathSearch): ?array
+    {
+        $matches = [];
+        $pathRegexp = preg_replace('/({)([a-zA-Z0-9]+)(})/', '(?<$2>.+)', $pathSearch);
+        if (!preg_match_all('#^' . $pathRegexp . '$#', $path, $matches)) {
+            return null;
+        }
+
+        return $this->extractParameters($matches);
+    }
+
+    /**
+     * Extract the parameters from the matches
+     *
+     * @param array<string,array<int,string>> $matches
+     * @return array<string,string>
+     */
+    protected function extractParameters(array $matches): array
+    {
+        $params = [];
+        foreach ($matches as $key => $value) {
+            if (is_numeric($key)) {
+                continue;
+            }
+            $params[$key] = urldecode($value[0]);
+        }
+        return $params;
     }
 
     /**
@@ -96,8 +140,13 @@ class Router
             return new Response(400, 'Bad request');
         }
 
-        $handler = $this->match($parsedUrl['path'], $method);
-
-        return $handler ? $handler() : new Response(404, 'Not found');
+        $matched = $this->match($parsedUrl['path'], $method);
+        if ($matched === null) {
+            return new Response(404, 'Not found');
+        }
+        if (!is_callable($matched['callback'])) {
+            return new Response(500, 'Internal server error');
+        }
+        return $matched['callback']($matched['params']);
     }
 }
