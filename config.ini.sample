@@ -1,3 +1,5 @@
 DB_DSN = "mysql:host=localhost;port=777;dbname=local"
 DB_USERNAME = "username"
 DB_PASSWORD = "password"
+
+IMAGE_STORAGE_DRIVER = "filesystem"
