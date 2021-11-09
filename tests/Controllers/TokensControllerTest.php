@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Database;
+use App\Request;
 use App\Token;
 use PHPUnit\Framework\TestCase;
 
@@ -18,14 +19,61 @@ class TokensControllerTest extends TestCase
     public function itAddsAToken()
     {
         // Arrange
-        $token = uniqid(md5((string)time()), true);
+        $random = uniqid(md5((string)time()), true);
+        $request = new Request([], [], ['token' => $random]);
 
         // Act
         $controller = new \App\Controllers\TokensController();
-        $response = $controller->grant($token);
+        $response = $controller->grant($request);
 
         // Assert
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertTrue((new Token())->isValid($token));
+        $this->assertTrue((new Token($random))->isValid());
+    }
+
+    /** @test */
+    public function itReturns422UnprocessableEntityIfMissingTokenOnGrant()
+    {
+        // Arrange
+        $request = new Request();
+
+        // Act
+        $controller = new \App\Controllers\TokensController();
+        $response = $controller->grant($request);
+
+        // Assert
+        $this->assertEquals(422, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function itRevokesAToken()
+    {
+        // Arrange
+        $random = uniqid(md5((string)time()), true);
+        (new Token($random))->grant();
+        $this->assertTrue((new Token($random))->isValid());
+        $request = new Request([], [], ['token' => $random]);
+
+        // Act
+        $controller = new \App\Controllers\TokensController();
+        $response = $controller->revoke($request);
+
+        // Assert
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertFalse((new Token($random))->isValid());
+    }
+
+    /** @test */
+    public function itReturns422UnprocessableEntityIfMissingTokenOnRevoke()
+    {
+        // Arrange
+        $request = new Request();
+
+        // Act
+        $controller = new \App\Controllers\TokensController();
+        $response = $controller->revoke($request);
+
+        // Assert
+        $this->assertEquals(422, $response->getStatusCode());
     }
 }
