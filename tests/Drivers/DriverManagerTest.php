@@ -19,4 +19,14 @@ class DriverManagerTest extends TestCase
         // Assert
         $this->assertInstanceOf(\App\Drivers\ImageStorage\ImageStorage::class, $driver);
     }
+
+    /** @test */
+    public function itThrowsExceptionIfInvalidImageStorageDriverRequested()
+    {
+        // Arrange
+        $this->expectException(\App\Exceptions\InvalidDriverException::class);
+
+        // Act
+        DriverManager::imageStorage('foobar');
+    }
 }
