@@ -30,7 +30,7 @@ jobs:
       run: composer install --prefer-dist --no-progress
 
     - name: Configure
-      run: touch config.ini
+      run: cp ./config.ini.sample ./config.ini
 
     - name: Run test suite
       run: composer test
