@@ -15,6 +15,6 @@ class HomeControllerTest extends TestCase
         $response = $controller->index();
 
         // Assert
-        $this->assertEquals('Storlex/API', $response);
+        $this->assertEquals('Storlex/API', $response->getBody());
     }
 }

@@ -48,9 +48,9 @@ class Router
         return null;
     }
 
-    public function handle(string $url): string
+    public function handle(string $url): Response
     {
         $handler = $this->match($url);
-        return $handler ? $handler() : '404';
+        return $handler ? $handler() : new Response(404, 'Not found');
     }
 }

@@ -10,6 +10,7 @@ class TokensController
     public function grant(string $token): Response
     {
         (new Token())->grant($token);
+
         return new Response(
             200,
             ['success' => true],

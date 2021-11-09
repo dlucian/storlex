@@ -6,6 +6,7 @@
 
 use App\Config;
 use App\Controllers\HomeController;
+use App\Response;
 use App\Router;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -20,5 +21,7 @@ if (!empty($_SERVER['REQUEST_URI'])) {
     $router->get('/', function() {
         return (new HomeController())->index();
     });
-    echo $router->handle($_SERVER['REQUEST_URI']);
+    Response::render(
+        $router->handle($_SERVER['REQUEST_URI'])
+    );
 }

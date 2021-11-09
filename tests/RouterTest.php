@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Response;
 use App\Router;
 use PHPUnit\Framework\TestCase;
 
@@ -68,7 +69,7 @@ final class RouterTest extends TestCase
     {
         // Arrange
         $callback = function () {
-            return 'I am content';
+            return new Response(200, 'I am content');
         };
 
         $router = new Router();
@@ -77,6 +78,6 @@ final class RouterTest extends TestCase
         // Act
         $response = $router->handle('/');
 
-        $this->assertEquals('I am content', $response);
+        $this->assertEquals('I am content', $response->getBody());
     }
 }
