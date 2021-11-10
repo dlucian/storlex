@@ -26,7 +26,7 @@ class FileSystem extends ImageStorage
         copy($image['file'], $storagePath);
     }
 
-    public function get(string $name): ?string
+    public function load(string $name): ?string
     {
         $storagePath = $this->getStoragePath($name);
         if (!file_exists($storagePath)) {

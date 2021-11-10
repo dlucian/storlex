@@ -66,7 +66,7 @@ class ImagesController extends BaseController
         }
 
         // Retrieve image
-        $image = $storage->get((string)$attributes['name']);
+        $image = $storage->load((string)$attributes['name']);
         if ($image === null) {
             return new Response(404, 'Not found');
         }

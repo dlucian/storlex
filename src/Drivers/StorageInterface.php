@@ -17,7 +17,7 @@ interface StorageInterface
      * @param string $name Image file name
      * @return ?string The image binary data
      */
-    public function get(string $name): ?string;
+    public function load(string $name): ?string;
 
     /**
      * Remove a file from storage.

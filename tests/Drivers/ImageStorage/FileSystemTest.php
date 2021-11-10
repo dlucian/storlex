@@ -67,7 +67,7 @@ class FileSystemTest extends TestCase
         ]);
 
         // Act
-        $image = $fs->get($fileName);
+        $image = $fs->load($fileName);
 
         // Assert
         $this->assertNotEmpty($image);

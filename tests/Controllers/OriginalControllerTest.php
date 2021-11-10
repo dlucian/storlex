@@ -97,7 +97,7 @@ class OriginalControllerTest extends TestCase
 
         // Assert
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertNull($fs->get($fileName));
+        $this->assertNull($fs->load($fileName));
     }
 
     /** @test */
