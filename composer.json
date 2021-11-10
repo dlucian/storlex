@@ -35,6 +35,10 @@
     ],
     "minimum-stability": "stable",
     "scripts": {
+        "hooks": [
+            "echo \"#!/bin/sh\n\ncomposer check\" > .git/hooks/pre-commit",
+            "chmod +x .git/hooks/pre-commit"
+        ],
         "test": "phpunit",
         "check": [
             "phpstan analyse -l 9 src",
@@ -47,6 +51,9 @@
         "coverage": "php -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text",
         "post-autoload-dump": [
             "mkdir -pv storage/original || true"
+        ],
+        "post-install-cmd": [
+            "composer hooks"
         ]
     }
 }
