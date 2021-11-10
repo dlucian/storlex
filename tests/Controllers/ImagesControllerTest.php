@@ -6,16 +6,21 @@ use App\Drivers\DriverManager;
 use App\Request;
 use PHPUnit\Framework\TestCase;
 
-class ImageControllerTest extends TestCase
+class ImagesControllerTest extends TestCase
 {
+    public function setUp(): void
+    {
+        DriverManager::imageCache()->clear();
+    }
+
     /** @test */
-    public function itRetrievesAnImage()
+    public function itRetrievesAResizedWebpImageEndToEnd()
     {
         // Arrange
-        $fileName = 'manki-kim-LLWS6gBToQ4-unsplash.jpg';
+        $fileName = 'balloons.jpg';
         $fs = DriverManager::imageStorage();
         $fs->save([
-            'name' => 'manki-kim-LLWS6gBToQ4-unsplash.jpg',
+            'name' => 'balloons.jpg',
             'file' => ROOT . '/tests/' . $fileName,
             'size' => filesize(ROOT . '/tests/' . $fileName),
             'type' => 'image/jpeg',
@@ -24,25 +29,57 @@ class ImageControllerTest extends TestCase
 
         // Act
         $controller = new \App\Controllers\ImagesController();
-        $response = $controller->retrieve($fileName . '-300x200.jpg', $request);
+        $response = $controller->retrieve(
+            $fileName . '-300x200.webp',
+            $request,
+            DriverManager::imageStorage() // for non-E2E, mock this
+        );
 
         // Assert
         $this->assertNotEmpty($response->getBody());
-        $this->assertNotEmpty(getimagesizefromstring($response->getBody()));
+        $size = getimagesizefromstring($response->getBody());
+        $this->assertNotEmpty($size);
+        $this->assertEquals(300, $size[0]);
+        $this->assertEquals(200, $size[1]);
+        $this->assertEquals('image/webp', $size['mime']);
+    }
+
+    /** @test */
+    public function itRetrievesAResizedJpegImageEndToEnd()
+    {
+        // Arrange
+        $fileName = 'balloons.jpg';
+        $fs = DriverManager::imageStorage();
+        $fs->save([
+            'name' => 'balloons.jpg',
+            'file' => ROOT . '/tests/' . $fileName,
+            'size' => filesize(ROOT . '/tests/' . $fileName),
+            'type' => 'image/jpeg',
+        ]);
+        $request = new Request([], [], [], [], []);
+
+        // Act
+        $controller = new \App\Controllers\ImagesController();
+        $response = $controller->retrieve(
+            $fileName . '-300x200.jpg',
+            $request,
+            DriverManager::imageStorage() // for non-E2E, mock this
+        );
+
+        // Assert
+        $this->assertNotEmpty($response->getBody());
+        $size = getimagesizefromstring($response->getBody());
+        $this->assertNotEmpty($size);
+        $this->assertEquals(300, $size[0]);
+        $this->assertEquals(200, $size[1]);
+        $this->assertEquals('image/jpeg', $size['mime']);
     }
 
     /** @test */
     public function itReturns400BadRequestIfTheImageSyntaxIsInvalid()
     {
         // Arrange
-        $fileName = 'manki-kim-LLWS6gBToQ4-unsplash.jpg';
-        $fs = DriverManager::imageStorage();
-        $fs->save([
-            'name' => 'manki-kim-LLWS6gBToQ4-unsplash.jpg',
-            'file' => ROOT . '/tests/' . $fileName,
-            'size' => filesize(ROOT . '/tests/' . $fileName),
-            'type' => 'image/jpeg',
-        ]);
+        $fileName = 'balloons.jpg';
         $request = new Request([], [], [], [], []);
 
         // Act

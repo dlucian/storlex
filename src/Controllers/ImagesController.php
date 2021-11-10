@@ -2,7 +2,13 @@
 
 namespace App\Controllers;
 
+use App\Drivers\CacheInterface;
 use App\Drivers\DriverManager;
+use App\Drivers\ImageCache\ImageCache;
+use App\Drivers\ImageProcessor\ImageProcessor;
+use App\Drivers\ImageStorage\ImageStorage;
+use App\Drivers\ProcessorInterface;
+use App\Drivers\StorageInterface;
 use App\Request;
 use App\Response;
 
@@ -17,17 +23,81 @@ class ImagesController extends BaseController
      * @param Request $request
      * @return Response
      */
-    public function retrieve(string $image, Request $request): Response
-    {
-        $attributes = $this->expandAttributes($image);
+    public function retrieve(
+        string $imageSlug,
+        Request $request,
+        StorageInterface $storage = null,
+        CacheInterface $cache = null,
+        ProcessorInterface $processor = null
+    ): Response {
+        // Load drivers
+        if (is_null($storage)) {
+            $storage = DriverManager::imageStorage();
+        }
+        if (is_null($cache)) {
+            $cache = DriverManager::imageCache();
+        }
+        if (is_null($processor)) {
+            $processor = DriverManager::imageProcessor();
+        }
+
+        $attributes = $this->expandAttributes($imageSlug);
         if ($attributes === null) {
             return new Response(400, 'Bad request');
         }
-        $image = DriverManager::imageStorage()->get((string)$attributes['name']);
+
+        // Do we have it cached?
+        if ($cached = $cache->get($imageSlug)) {
+            if (!is_string($cached)) {
+                return new Response(500, 'Cache error');
+            }
+            return new Response(
+                200,
+                $cached,
+                ['Content-Type' => $this->extensionToMimeType($attributes['extension'])]
+            );
+        }
+
+        // Retrieve image
+        $image = $storage->get((string)$attributes['name']);
         if ($image === null) {
             return new Response(404, 'Not found');
         }
-        return new Response(200, $image, ['Content-Type' => 'image/png']);
+
+        // Process image
+        $processed = $processor->load($image)
+            ->resize((int)$attributes['width'], (int)$attributes['height'])
+            ->render((string)$attributes['extension']);
+
+        if ($processed === null) {
+            return new Response(500, 'Processing error');
+        }
+
+        $cache->set($imageSlug, $processed);
+
+        return new Response(
+            200,
+            $processed,
+            ['Content-Type' => $this->extensionToMimeType($attributes['extension'])]
+        );
+    }
+
+    /**
+     * @param mixed $extension
+     */
+    protected function extensionToMimeType($extension): string
+    {
+        switch ($extension) {
+            case 'jpg':
+            case 'jpeg':
+                return 'image/jpeg';
+            case 'png':
+                return 'image/png';
+            case 'webp':
+                return 'image/webp';
+            default:
+                return 'application/octet-stream';
+        }
     }
 
     /**
@@ -50,7 +120,7 @@ class ImagesController extends BaseController
             'name' => (string)$matches[1],
             'width' => (int)$matches[2],
             'height' => (int)$matches[3],
-            'extension' => (string)$matches[4],
+            'extension' => $matches[4] === 'jpg' ? 'jpeg' : (string)$matches[4],
         ];
     }
 }

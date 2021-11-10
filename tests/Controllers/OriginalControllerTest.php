@@ -11,7 +11,7 @@ class OriginalControllerTest extends TestCase
     public function itUploadsAnOriginaImage()
     {
         // Arrange
-        $fileName = 'manki-kim-LLWS6gBToQ4-unsplash.jpg';
+        $fileName = 'balloons.jpg';
         $filePath = ROOT . '/tests/' . $fileName;
         $uniqueId = uniqid();
         $tempPath = sys_get_temp_dir() . '/' . $uniqueId . '.jpg';

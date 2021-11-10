@@ -26,6 +26,9 @@ class FileSystem extends ImageCache
 
     public function get($key, $default = null)
     {
+        if (!file_exists($this->cachePath . urlencode($key) . '.cache')) {
+            return null;
+        }
         return file_get_contents($this->cachePath . urlencode($key) . '.cache');
     }
 
