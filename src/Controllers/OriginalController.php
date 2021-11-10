@@ -50,11 +50,11 @@ class OriginalController extends BaseController
 
         $file = $request->input('filename');
         if ($file === null) {
-            return new Response(422, ['message' => 'Missing filename']);
+            return new Response(422, ['message' => 'Missing filename'], ['Content-Type' => 'application/json']);
         }
 
         if (DriverManager::imageStorage()->exists($file) === false) {
-            return new Response(404, ['message' => 'File not found']);
+            return new Response(404, ['message' => 'File not found'], ['Content-Type' => 'application/json']);
         }
 
         DriverManager::imageStorage()->remove($file);
