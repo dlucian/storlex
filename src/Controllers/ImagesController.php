@@ -65,12 +65,16 @@ class ImagesController extends BaseController
         }
 
         // Process image
-        $processed = $processor->load($image)
-            ->resize((int)$attributes['width'], (int)$attributes['height'])
-            ->render((string)$attributes['extension']);
+        try {
+            $processed = $processor->load($image)
+                ->resize((int)$attributes['width'], (int)$attributes['height'])
+                ->render((string)$attributes['extension']);
 
-        if ($processed === null) {
-            return new Response(500, 'Processing error');
+            if ($processed === null) {
+                return new Response(500, 'Processing error');
+            }
+        } catch (\Exception $e) {
+            return new Response(500, 'Processing error: ' . $e->getMessage());
         }
 
         $cache->set($imageSlug, $processed);
