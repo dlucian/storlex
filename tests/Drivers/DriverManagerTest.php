@@ -39,4 +39,14 @@ class DriverManagerTest extends TestCase
         // Assert
         $this->assertInstanceOf(\App\Drivers\ImageCache\ImageCache::class, $driver);
     }
+
+    /** @test */
+    public function itRetrievesAnImageProcessorDriver()
+    {
+        // Act
+        $driver = DriverManager::imageProcessor('gd2');
+
+        // Assert
+        $this->assertInstanceOf(\App\Drivers\ImageProcessor\ImageProcessor::class, $driver);
+    }
 }

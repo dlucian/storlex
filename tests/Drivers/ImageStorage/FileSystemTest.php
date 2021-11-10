@@ -28,7 +28,7 @@ class FileSystemTest extends TestCase
     public function itSavesAnImage()
     {
         // Arrange
-        $fileName = 'manki-kim-LLWS6gBToQ4-unsplash.jpg';
+        $fileName = 'balloons.jpg';
         $filePath = ROOT . '/tests/' . $fileName;
         $fs = new FileSystem();
 
@@ -51,7 +51,7 @@ class FileSystemTest extends TestCase
     public function itRetrievesAndImageFromStorage()
     {
         // Arrange
-        $fileName = 'manki-kim-LLWS6gBToQ4-unsplash.jpg';
+        $fileName = 'balloons.jpg';
         $filePath = ROOT . '/tests/' . $fileName;
         $fs = new FileSystem();
         unlink($fs->getStoragePath($fileName));

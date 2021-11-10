@@ -61,7 +61,7 @@ class RequestTest extends TestCase
         // Arrange
         $request = new Request([], [], [], [], [
             'foo' => [
-                'name' => 'manki-kim-LLWS6gBToQ4-unsplash.jpg',
+                'name' => 'balloons.jpg',
                 'type' => 'image/jpeg',
                 'tmp_name' => '/var/folders/kc/m3sz9v8s3694m081z1fh62lc0000gn/T/618ad4a10a9d3.jpg',
                 'error' => '0',
@@ -73,6 +73,6 @@ class RequestTest extends TestCase
         $file = $request->getFile('foo');
 
         // Assert
-        $this->assertEquals('manki-kim-LLWS6gBToQ4-unsplash.jpg', $file['name']);
+        $this->assertEquals('balloons.jpg', $file['name']);
     }
 }
