@@ -37,6 +37,9 @@ class FileSystem extends ImageStorage
     public function get(string $name): ?string
     {
         $storagePath = $this->getStoragePath($name);
+        if (!file_exists($storagePath)) {
+            return null;
+        }
         return file_get_contents($storagePath) ?: null;
     }
 
