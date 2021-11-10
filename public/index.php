@@ -20,7 +20,7 @@ if (!empty($_SERVER['REQUEST_URI']) && !empty($_SERVER['REQUEST_METHOD'])) {
     $request = new Request();
     $router = new Router();
     $router->get('/', function() {
-        return (new HomeController())->index();
+        return (new \App\Controllers\HomeController())->index();
     });
     $router->post('/token', function() use ($request) {
         return (new \App\Controllers\TokensController())->grant($request);
