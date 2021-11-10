@@ -99,4 +99,17 @@ class OriginalControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertNull($fs->get($fileName));
     }
+
+    /** @test */
+    public function itReturns404IfTryingToDeleteAnImageThatDoesntExist()
+    {
+        $request = new Request(['HTTP_AUTHORIZATION' => 'Bearer testTOKEN'], [], ['filename' => 'zorba.png'], []);
+
+        // Act
+        $controller = new \App\Controllers\OriginalController();
+        $response = $controller->delete($request);
+
+        // Assert
+        $this->assertEquals(404, $response->getStatusCode());
+    }
 }

@@ -43,6 +43,11 @@ class FileSystem extends ImageStorage
         }
     }
 
+    public function exists(string $name): bool
+    {
+        return file_exists($this->getStoragePath($name));
+    }
+
     /**
      * Generate a path to the image.
      *

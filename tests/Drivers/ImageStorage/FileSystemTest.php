@@ -73,4 +73,52 @@ class FileSystemTest extends TestCase
         $this->assertNotEmpty($image);
         $this->assertNotEmpty(getimagesizefromstring($image));
     }
+
+    /** @test */
+    public function itDeletesAndImageFromStorage()
+    {
+        // Arrange
+        $fileName = 'balloons.jpg';
+        $filePath = ROOT . '/tests/' . $fileName;
+        $fs = new FileSystem();
+        if (file_exists($fs->getStoragePath($fileName))) {
+            unlink($fs->getStoragePath($fileName));
+        }
+        $fs->save([
+            'name' => $fileName,
+            'type' => 'image/jpeg',
+            'file' => $filePath,
+            'size' => filesize($filePath),
+        ]);
+
+        // Act
+        $fs->remove($fileName);
+
+        // Assert
+        $this->assertFalse(file_exists($fs->getStoragePath($fileName)));
+    }
+
+    /** @test */
+    public function itChecksIfAFileExists()
+    {
+        // Arrange
+        $fileName = 'balloons.jpg';
+        $filePath = ROOT . '/tests/' . $fileName;
+        $fs = new FileSystem();
+        if (file_exists($fs->getStoragePath($fileName))) {
+            unlink($fs->getStoragePath($fileName));
+        }
+
+        // Act / Assert
+        $this->assertFalse($fs->exists($fileName));
+
+        $fs->save([
+            'name' => $fileName,
+            'type' => 'image/jpeg',
+            'file' => $filePath,
+            'size' => filesize($filePath),
+        ]);
+
+        $this->assertTrue($fs->exists($fileName));
+    }
 }

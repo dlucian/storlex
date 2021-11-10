@@ -53,9 +53,13 @@ class OriginalController extends BaseController
             return new Response(422, ['message' => 'Missing filename']);
         }
 
+        if (DriverManager::imageStorage()->exists($file) === false) {
+            return new Response(404, ['message' => 'File not found']);
+        }
+
         DriverManager::imageStorage()->remove($file);
-        return $this->successJson(
-            sprintf('File \'%s\' deleted successfully', $file)
-        );
+            return $this->successJson(
+                sprintf('File \'%s\' deleted successfully', $file)
+            );
     }
 }

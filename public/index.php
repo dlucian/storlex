@@ -33,6 +33,9 @@ if (!empty($_SERVER['REQUEST_URI']) && !empty($_SERVER['REQUEST_METHOD'])) {
     $router->post('/original', function() use ($request) {
         return (new \App\Controllers\OriginalController())->upload($request);
     });
+    $router->delete('/original', function() use ($request) {
+        return (new \App\Controllers\OriginalController())->delete($request);
+    });
     $router->get('/img/{image}', function($params) use ($request) {
         return (new \App\Controllers\ImagesController())->retrieve($params['image'], $request);
     });

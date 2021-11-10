@@ -26,4 +26,12 @@ interface StorageInterface
      * @return void
      */
     public function remove(string $name): void;
+
+    /**
+     * Check if a file exists in storage.
+     *
+     * @param string $name
+     * @return bool True if exists, false otherwise
+     */
+    public function exists(string $name): bool;
 }

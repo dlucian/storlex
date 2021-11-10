@@ -43,6 +43,18 @@ class Router
     }
 
     /**
+     * Add a DELETE route for $path to $handler
+     *
+     * @param string $path
+     * @param Closure $handler
+     * @return void
+     */
+    public function delete(string $path, Closure $handler): void
+    {
+        $this->addRoute('DELETE', $path, $handler);
+    }
+
+    /**
      * Add a route for $method and $path to $handler
      *
      * @param string $method

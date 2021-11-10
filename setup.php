@@ -14,6 +14,6 @@ use App\Database;
 // Load bootstrap
 require(__DIR__ . '/public/index.php');
 
-Database::execute('CREATE TABLE IF NOT EXISTS tokens (token VARCHAR(100) NOT NULL PRIMARY KEY)');
+Database::execute('CREATE TABLE IF NOT EXISTS tokens (token VARCHAR(512) NOT NULL PRIMARY KEY)');
 
 echo "Setup complete!";

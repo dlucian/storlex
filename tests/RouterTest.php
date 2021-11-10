@@ -73,6 +73,22 @@ final class RouterTest extends TestCase
     }
 
     /** @test */
+    public function itMatchesDeleteRoutes()
+    {
+        // Arrange
+        $callback = function () {
+            return 'Hello World';
+        };
+
+        // Act
+        $router = new Router();
+        $router->delete('/something-else', $callback);
+
+        // Assert
+        $this->assertEquals($callback(), $router->match('/something-else', 'DELETE')['callback']());
+    }
+
+    /** @test */
     public function itHandlesUrlsContainingQueryStringsAndHash()
     {
         // Arrange
