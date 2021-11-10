@@ -5,3 +5,5 @@ DB_PASSWORD = "password"
 IMAGE_STORAGE_DRIVER = "file"
 IMAGE_CACHE_DRIVER = "file"
 IMAGE_PROCESSOR_DRIVER = "gd2"
+
+ADMIN_TOKEN[] = "bazinga"
