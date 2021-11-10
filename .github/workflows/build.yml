@@ -32,5 +32,8 @@ jobs:
     - name: Configure
       run: cp ./config.ini.sample ./config.ini
 
-    - name: Run code check and test suite
+    - name: Run code check
       run: composer check
+
+    - name: Run unit tests
+      run: composer test

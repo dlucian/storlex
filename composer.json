@@ -44,8 +44,7 @@
             "phpstan analyse -l 9 src",
             "phpstan analyse -l 5 tests",
             "phpcbf --standard=PSR12 ./src ./tests || true",
-            "phpcs --standard=PSR12 ./src ./tests",
-            "phpunit"
+            "phpcs --standard=PSR12 ./src ./tests"
         ],
         "debug": "php -dxdebug.mode=debug ./vendor/bin/phpunit",
         "coverage": "php -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text",
