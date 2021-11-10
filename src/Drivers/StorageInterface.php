@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Drivers\ImageStorage;
+namespace App\Drivers;
 
-interface ImageStorageContract
+interface StorageInterface
 {
     /**
      * Store an image.

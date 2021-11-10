@@ -17,10 +17,13 @@ class FileSystem extends ImageStorage
     /**
      * Save an original image to the storage.
      *
-     * @param array<string,string> $image Image info: 'file', 'name', 'type', 'size'
+     * @param array<string,string|int> $image Image info: 'file', 'name', 'type', 'size'
      */
     public function save(array $image): void
     {
+        if (!is_string($image['name']) || ! is_string($image['file'])) {
+            throw new \InvalidArgumentException('Image name must be a string');
+        }
         $storagePath = $this->getStoragePath($image['name']);
         if (!is_dir(dirname($storagePath))) {
             mkdir(dirname($storagePath), 0777, true);

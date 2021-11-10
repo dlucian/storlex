@@ -23,4 +23,50 @@ class FileSystemTest extends TestCase
         // Assert
         $this->assertEquals(ROOT . '/storage/original/041/test.jpg', $path);
     }
+
+    /** @test */
+    public function itSavesAnImage()
+    {
+        // Arrange
+        $fileName = 'manki-kim-LLWS6gBToQ4-unsplash.jpg';
+        $filePath = ROOT . '/tests/' . $fileName;
+        $fs = new FileSystem();
+
+        // Act
+        unlink($fs->getStoragePath($fileName));
+        $fs->save([
+            'name' => $fileName,
+            'type' => 'image/jpeg',
+            'file' => $filePath,
+            'size' => filesize($filePath),
+        ]);
+
+        // Assert
+        $this->assertTrue(file_exists($fs->getStoragePath($fileName)));
+        // Slow, but maybe useful
+        // $this->assertNotEmpty(imagecreatefromjpeg($fs->getStoragePath($fileName)));
+    }
+
+    /** @test */
+    public function itRetrievesAndImageFromStorage()
+    {
+        // Arrange
+        $fileName = 'manki-kim-LLWS6gBToQ4-unsplash.jpg';
+        $filePath = ROOT . '/tests/' . $fileName;
+        $fs = new FileSystem();
+        unlink($fs->getStoragePath($fileName));
+        $fs->save([
+            'name' => $fileName,
+            'type' => 'image/jpeg',
+            'file' => $filePath,
+            'size' => filesize($filePath),
+        ]);
+
+        // Act
+        $image = $fs->get($fileName);
+
+        // Assert
+        $this->assertNotEmpty($image);
+        $this->assertNotEmpty(getimagesizefromstring($image));
+    }
 }

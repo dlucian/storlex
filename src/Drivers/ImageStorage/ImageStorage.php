@@ -2,7 +2,9 @@
 
 namespace App\Drivers\ImageStorage;
 
-abstract class ImageStorage implements ImageStorageContract
+use App\Drivers\StorageInterface;
+
+abstract class ImageStorage implements StorageInterface
 {
     //
 }

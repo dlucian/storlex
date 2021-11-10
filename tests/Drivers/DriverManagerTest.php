@@ -14,7 +14,7 @@ class DriverManagerTest extends TestCase
     public function itRetrievesAnImageStorageDriver()
     {
         // Act
-        $driver = DriverManager::imageStorage('filesystem');
+        $driver = DriverManager::imageStorage('file');
 
         // Assert
         $this->assertInstanceOf(\App\Drivers\ImageStorage\ImageStorage::class, $driver);
@@ -28,5 +28,15 @@ class DriverManagerTest extends TestCase
 
         // Act
         DriverManager::imageStorage('foobar');
+    }
+
+    /** @test */
+    public function itRetrievesAnImageCacheDriver()
+    {
+        // Act
+        $driver = DriverManager::imageCache('file');
+
+        // Assert
+        $this->assertInstanceOf(\App\Drivers\ImageCache\ImageCache::class, $driver);
     }
 }

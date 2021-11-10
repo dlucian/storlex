@@ -6,7 +6,7 @@ This is vanilla PHP image resizing, caching and serving server.
 
 ## Features
 
-* lightweight, fast pure-PHP server
+* lightweight, fast, pure-PHP server
 * no production package dependencies
 * on-the-fly resizing and caching
 * provides token-based authentication
