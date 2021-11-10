@@ -54,7 +54,9 @@ class FileSystemTest extends TestCase
         $fileName = 'balloons.jpg';
         $filePath = ROOT . '/tests/' . $fileName;
         $fs = new FileSystem();
-        unlink($fs->getStoragePath($fileName));
+        if (file_exists($fs->getStoragePath($fileName))) {
+            unlink($fs->getStoragePath($fileName));
+        }
         $fs->save([
             'name' => $fileName,
             'type' => 'image/jpeg',

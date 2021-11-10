@@ -14,11 +14,6 @@ class FileSystem extends ImageStorage
         $this->storagePath = ROOT . '/storage/original/';
     }
 
-    /**
-     * Save an original image to the storage.
-     *
-     * @param array<string,string|int> $image Image info: 'file', 'name', 'type', 'size'
-     */
     public function save(array $image): void
     {
         if (!is_string($image['name']) || ! is_string($image['file'])) {
@@ -31,12 +26,6 @@ class FileSystem extends ImageStorage
         copy($image['file'], $storagePath);
     }
 
-    /**
-     * Retrieve an image from storage and return it.
-     *
-     * @param string $name Image file name
-     * @return ?string The image binary data
-     */
     public function get(string $name): ?string
     {
         $storagePath = $this->getStoragePath($name);
@@ -44,6 +33,14 @@ class FileSystem extends ImageStorage
             return null;
         }
         return file_get_contents($storagePath) ?: null;
+    }
+
+    public function remove(string $name): void
+    {
+        $storagePath = $this->getStoragePath($name);
+        if (file_exists($storagePath)) {
+            unlink($storagePath);
+        }
     }
 
     /**

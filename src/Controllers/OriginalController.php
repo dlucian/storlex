@@ -35,4 +35,27 @@ class OriginalController extends BaseController
             sprintf('File \'%s\' uploaded successfully', $file['name'])
         );
     }
+
+    /**
+     * Delete an original image from storage
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function delete(Request $request): Response
+    {
+        if ($adminRequest = $this->validateAdminRequest($request)) {
+            return $adminRequest;
+        }
+
+        $file = $request->input('filename');
+        if ($file === null) {
+            return new Response(422, ['message' => 'Missing filename']);
+        }
+
+        DriverManager::imageStorage()->remove($file);
+        return $this->successJson(
+            sprintf('File \'%s\' deleted successfully', $file)
+        );
+    }
 }

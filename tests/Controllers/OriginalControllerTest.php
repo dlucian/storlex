@@ -2,6 +2,7 @@
 
 namespace Tests\Controllers;
 
+use App\Drivers\ImageStorage\FileSystem;
 use App\Request;
 use PHPUnit\Framework\TestCase;
 
@@ -70,5 +71,30 @@ class OriginalControllerTest extends TestCase
 
         // Assert
         $this->assertEquals(401, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function itDeletesAnOriginalImage()
+    {
+        // Arrange
+        $fileName = 'balloons.jpg';
+        $filePath = ROOT . '/tests/' . $fileName;
+        $fs = new FileSystem();
+        unlink($fs->getStoragePath($fileName));
+        $fs->save([
+            'name' => $fileName,
+            'type' => 'image/jpeg',
+            'file' => $filePath,
+            'size' => filesize($filePath),
+        ]);
+        $request = new Request(['HTTP_AUTHORIZATION' => 'Bearer testTOKEN'], [], ['filename' => $fileName], []);
+
+        // Act
+        $controller = new \App\Controllers\OriginalController();
+        $response = $controller->delete($request);
+
+        // Assert
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertNull($fs->get($fileName));
     }
 }
