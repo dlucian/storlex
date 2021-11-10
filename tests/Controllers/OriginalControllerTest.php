@@ -7,6 +7,11 @@ use PHPUnit\Framework\TestCase;
 
 class OriginalControllerTest extends TestCase
 {
+    public function setUp(): void
+    {
+        $_ENV['ADMIN_TOKEN'] = ['testTOKEN'];
+    }
+
     /** @test */
     public function itUploadsAnOriginaImage()
     {
@@ -17,7 +22,8 @@ class OriginalControllerTest extends TestCase
         $tempPath = sys_get_temp_dir() . '/' . $uniqueId . '.jpg';
         copy($filePath, $tempPath);
 
-        $request = new Request([], [], [], [], [
+        $request = new Request(
+            ['HTTP_AUTHORIZATION' => 'Bearer testTOKEN'], [], [], [], [
             'file' => [
                 'name' => $fileName,
                 'type' => 'image/jpeg',
@@ -34,5 +40,30 @@ class OriginalControllerTest extends TestCase
         unlink($tempPath);
         // Assert
         $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function itDeniesUploadingAnOriginaImageWithoutAdminToken()
+    {
+        // Arrange
+        $fileName = 'balloons.jpg';
+        $filePath = ROOT . '/tests/' . $fileName;
+
+        $request = new Request([], [], [], [], [
+            'file' => [
+                'name' => $fileName,
+                'type' => 'image/jpeg',
+                'tmp_name' => $filePath,
+                'error' => 0,
+                'size' => filesize($filePath),
+            ],
+        ]);
+
+        // Act
+        $controller = new \App\Controllers\OriginalController();
+        $response = $controller->upload($request);
+
+        // Assert
+        $this->assertEquals(401, $response->getStatusCode());
     }
 }

@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Drivers\DriverManager;
 use App\Request;
 use App\Response;
+use App\Traits\ValidatesAdminRequests;
 
 /**
  * Original Images Controller
@@ -14,6 +15,8 @@ use App\Response;
  */
 class OriginalController extends BaseController
 {
+    use ValidatesAdminRequests;
+
     /**
      * Upload image
      *
@@ -22,6 +25,10 @@ class OriginalController extends BaseController
      */
     public function upload(Request $request): Response
     {
+        if ($adminRequest = $this->validateAdminRequest($request)) {
+            return $adminRequest;
+        }
+
         $file = $request->getFile('file');
         DriverManager::imageStorage()->save($file);
         return $this->successJson(

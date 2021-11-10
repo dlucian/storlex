@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Request;
 use App\Response;
 use App\Token;
+use App\Traits\ValidatesAdminRequests;
 
 /**
  * Tokens Controller
@@ -13,6 +14,8 @@ use App\Token;
  */
 class TokensController extends BaseController
 {
+    use ValidatesAdminRequests;
+
     /**
      * Grant access to a token
      *
@@ -60,20 +63,8 @@ class TokensController extends BaseController
 
     protected function validateInput(Request $request): ?Response
     {
-        if (empty($request->server('HTTP_AUTHORIZATION'))) {
-            return new Response(401, 'No authorization header provided');
-        }
-
-        if (substr($request->server('HTTP_AUTHORIZATION'), 0, 6) !== 'Bearer') {
-            return new Response(401, 'Invalid authorization header');
-        }
-
-        if (empty($_ENV['ADMIN_TOKEN'])) {
-            return new Response(500, 'No allowed tokens configured');
-        }
-
-        if (!in_array(substr($request->server('HTTP_AUTHORIZATION'), 7), $_ENV['ADMIN_TOKEN'])) {
-            return new Response(401, 'Invalid token');
+        if ($adminRequest = $this->validateAdminRequest($request)) {
+            return $adminRequest;
         }
 
         $inputToken = $request->input('token');
