@@ -52,17 +52,24 @@ class Gd2 extends ImageProcessor
         if (!is_resource($resized)) {
             throw new ProcessingException('Failed to create intermediate image');
         }
+
+        $ratio = max($width / $this->width, $height / $this->height);
+        $h = $height / $ratio;
+        $x = ($this->width - $width / $ratio) / 2;
+        $y = ($this->height - $height / $ratio) / 2;
+        $w = $width / $ratio;
+
         imagecopyresampled(
             $resized,        // GdImage $dst_image,
             $this->image,    // GdImage $src_image,
-            0,
-            0,            // $dst_x, $dst_y,
-            0,
-            0,            // $src_x, $src_y,
-            $width,
-            $height, // $dst_width, $dst_height,
-            $this->width,
-            $this->height // $src_width, $src_height
+            0,               // $dst_x,
+            0,               // $dst_y,
+            (int)$x,              // $src_x
+            (int)$y,              // $src_y,
+            $width,          // $dst_width
+            $height,         // $dst_height
+            (int)$w,              // $src_width
+            (int)$h               // $src_height
         );
         $this->image = $resized;
         return $this;
