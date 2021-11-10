@@ -12,17 +12,21 @@ This is vanilla PHP image resizing, caching and serving server.
 * provides token-based authentication
 * supports multiple image formats (jpeg, png, webp)
 * supports multiple image sizes
-* extendable image storage drivers
-* extendable image caching drivers
+* extendable image storage, caching and processing drivers
 
 ### Under the hood
 
 * [PSR-12](https://www.php-fig.org/psr/psr-12) compliant codebase
-* ?[PSR-16](https://www.php-fig.org/psr/psr-16) compliant cache drivers
+* [PSR-16](https://www.php-fig.org/psr/psr-16) compliant cache drivers
 * [phpstan](https://phpstan.org/)-checked codebase (level 9, maximum)
 * [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer#readme)-checked codebase (syntax)
 * test-covered codebase (unit tests)
 
+## Requirements
+
+* PHP 7.4 (default on Ubuntu 20.04 LTS)
+* PDO (PHP Extension)
+* GD2 (PHP Extension)
 ## Installation
 
 Clone the repository in your preferred location. Then, install the required packages:
