@@ -65,11 +65,22 @@ class Request
     }
 
     /**
-     * @return array<string,string>
+     * @return array<string,string>|string
      */
-    public function getServer(): array
+    public function getServer()
     {
         return $this->server;
+    }
+
+    /**
+     * Return a $_SERVER value
+     *
+     * @param string $attribute
+     * @return string
+     */
+    public function server(string $attribute = ''): string
+    {
+        return $this->server[$attribute] ?? '';
     }
 
     /**
