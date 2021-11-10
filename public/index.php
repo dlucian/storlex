@@ -30,6 +30,9 @@ if (!empty($_SERVER['REQUEST_URI']) && !empty($_SERVER['REQUEST_METHOD'])) {
     $router->post('/token', function() use ($request) {
         return (new \App\Controllers\TokensController())->grant($request);
     });
+    $router->delete('/token', function() use ($request) {
+        return (new \App\Controllers\TokensController())->revoke($request);
+    });
     $router->post('/original', function() use ($request) {
         return (new \App\Controllers\OriginalController())->upload($request);
     });
