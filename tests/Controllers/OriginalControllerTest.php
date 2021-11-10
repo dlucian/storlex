@@ -23,7 +23,11 @@ class OriginalControllerTest extends TestCase
         copy($filePath, $tempPath);
 
         $request = new Request(
-            ['HTTP_AUTHORIZATION' => 'Bearer testTOKEN'], [], [], [], [
+            ['HTTP_AUTHORIZATION' => 'Bearer testTOKEN'],
+            [],
+            [],
+            [],
+            [
             'file' => [
                 'name' => $fileName,
                 'type' => 'image/jpeg',
@@ -31,7 +35,8 @@ class OriginalControllerTest extends TestCase
                 'error' => 0,
                 'size' => filesize($tempPath),
             ],
-        ]);
+            ]
+        );
 
         // Act
         $controller = new \App\Controllers\OriginalController();
