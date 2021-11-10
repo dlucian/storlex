@@ -11,12 +11,15 @@ use App\Drivers\ProcessorInterface;
 use App\Drivers\StorageInterface;
 use App\Request;
 use App\Response;
+use App\Traits\ValidatesTokenRequest;
 
 /**
  * Images Controller
  */
 class ImagesController extends BaseController
 {
+    use ValidatesTokenRequest;
+
     /**
      * Retrieve image
      *
@@ -30,6 +33,10 @@ class ImagesController extends BaseController
         CacheInterface $cache = null,
         ProcessorInterface $processor = null
     ): Response {
+        // Validate authorization
+        if ($tokenRequest = $this->validateTokenRequest($request)) {
+            return $tokenRequest;
+        }
         // Load drivers
         if (is_null($storage)) {
             $storage = DriverManager::imageStorage();

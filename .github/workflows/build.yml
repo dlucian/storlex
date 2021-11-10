@@ -37,7 +37,7 @@ jobs:
     - name: Configure
       run: cp ./config.ini.sample ./config.ini
 
-    - name: Run code check
+    - name: Run phpstan & phpcs code checks
       run: composer check
 
     - name: Run unit tests

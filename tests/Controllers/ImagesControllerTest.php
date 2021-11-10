@@ -2,14 +2,20 @@
 
 namespace Tests\Controllers;
 
+use App\Database;
 use App\Drivers\DriverManager;
 use App\Request;
+use App\Token;
 use PHPUnit\Framework\TestCase;
 
 class ImagesControllerTest extends TestCase
 {
     public function setUp(): void
     {
+        Database::execute('CREATE TABLE IF NOT EXISTS tokens (token VARCHAR(1024) NOT NULL PRIMARY KEY)');
+        Database::execute('DELETE FROM tokens');
+        (new Token('imageTOKEN'))->grant();
+
         DriverManager::imageCache()->clear();
     }
 
@@ -25,7 +31,7 @@ class ImagesControllerTest extends TestCase
             'size' => filesize(ROOT . '/tests/' . $fileName),
             'type' => 'image/jpeg',
         ]);
-        $request = new Request([], [], [], [], []);
+        $request = new Request(['HTTP_AUTHORIZATION' => 'Bearer imageTOKEN'], [], [], [], []);
 
         // Act
         $controller = new \App\Controllers\ImagesController();
@@ -56,7 +62,7 @@ class ImagesControllerTest extends TestCase
             'size' => filesize(ROOT . '/tests/' . $fileName),
             'type' => 'image/jpeg',
         ]);
-        $request = new Request([], [], [], [], []);
+        $request = new Request(['HTTP_AUTHORIZATION' => 'Bearer imageTOKEN'], [], [], [], []);
 
         // Act
         $controller = new \App\Controllers\ImagesController();
@@ -80,7 +86,7 @@ class ImagesControllerTest extends TestCase
     {
         // Arrange
         $fileName = 'balloons.jpg';
-        $request = new Request([], [], [], [], []);
+        $request = new Request(['HTTP_AUTHORIZATION' => 'Bearer imageTOKEN'], [], [], [], []);
 
         // Act
         $controller = new \App\Controllers\ImagesController();
@@ -95,7 +101,7 @@ class ImagesControllerTest extends TestCase
     {
         // Arrange
         $fileName = 'some-inexisting-image.jpg';
-        $request = new Request([], [], [], [], []);
+        $request = new Request(['HTTP_AUTHORIZATION' => 'Bearer imageTOKEN'], [], [], [], []);
 
         // Act
         $controller = new \App\Controllers\ImagesController();
@@ -103,5 +109,50 @@ class ImagesControllerTest extends TestCase
 
         // Assert
         $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function itReturns401UnauthorizedIfAuthenticationHeaderIsMissing()
+    {
+        // Arrange
+        $fileName = 'some-inexisting-photo.jpg';
+        $request = new Request([], [], [], [], []);
+
+        // Act
+        $controller = new \App\Controllers\ImagesController();
+        $response = $controller->retrieve($fileName . '-300x200.jpg', $request);
+
+        // Assert
+        $this->assertEquals(401, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function itReturns401UnauthorizedIfAuthenticationHeaderIsWrong()
+    {
+        // Arrange
+        $fileName = 'some-inexisting-photo.jpg';
+        $request = new Request(['HTTP_AUTHORIZATION' => 'Bearer somethingELSE'], [], [], [], []);
+
+        // Act
+        $controller = new \App\Controllers\ImagesController();
+        $response = $controller->retrieve($fileName . '-300x200.jpg', $request);
+
+        // Assert
+        $this->assertEquals(401, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function itReturns401UnauthorizedIfAuthenticationHeaderIsInvalid()
+    {
+        // Arrange
+        $fileName = 'some-inexisting-photo.jpg';
+        $request = new Request(['HTTP_AUTHORIZATION' => 'Com/pletely$wrong 1'], [], [], [], []);
+
+        // Act
+        $controller = new \App\Controllers\ImagesController();
+        $response = $controller->retrieve($fileName . '-300x200.jpg', $request);
+
+        // Assert
+        $this->assertEquals(401, $response->getStatusCode());
     }
 }
