@@ -21,6 +21,12 @@ class ImagesController extends BaseController
     use ValidatesTokenRequest;
 
     /**
+     * Defines maximum time an image processing job
+     * should keep concurrent jobs waiting.
+    */
+    public const DEFAULT_LOCK_SECONDS = 15;
+
+    /**
      * Retrieve image
      *
      * @param Request $request
@@ -57,6 +63,11 @@ class ImagesController extends BaseController
             return new Response(400, 'Bad request');
         }
 
+        // Is it being processed in another thread/job?
+        while ($this->isLocked($imageSlug, $cache)) {
+            sleep(1);
+        }
+
         // Do we have it cached?
         if ($cached = $cache->get($imageSlug, (string)$attributes['name'])) {
             if (!is_string($cached)) {
@@ -68,6 +79,8 @@ class ImagesController extends BaseController
                 ['Content-Type' => $this->extensionToMimeType($attributes['extension'])]
             );
         }
+
+        $this->setLock($imageSlug, self::DEFAULT_LOCK_SECONDS, $cache);
 
         // Retrieve image
         $image = $storage->load((string)$attributes['name']);
@@ -90,11 +103,51 @@ class ImagesController extends BaseController
 
         $cache->set($imageSlug, $processed, (string)$attributes['name']);
 
+        $this->removeLock($imageSlug, $cache);
+
         return new Response(
             200,
             $processed,
             ['Content-Type' => $this->extensionToMimeType($attributes['extension'])]
         );
+    }
+
+    /**
+     * Set a lock with an expiration time
+     *
+     * @param string $imageSlug
+     * @param int $lockTime
+     * @param CacheInterface $cache
+     * @return void
+     */
+    protected function setLock(string $imageSlug, int $lockTime, CacheInterface $cache): void
+    {
+        $cache->set('locked-' . $imageSlug, time() + $lockTime);
+    }
+
+    /**
+     * Check if an $imageSlug is locked and not expired
+     *
+     * @param string $imageSlug
+     * @param CacheInterface $cache
+     * @return bool
+     */
+    protected function isLocked(string $imageSlug, CacheInterface $cache): bool
+    {
+        $locked = $cache->get('locked-' . $imageSlug);
+        return $locked !== null && $locked > time();
+    }
+
+    /**
+     * Remove a lock
+     *
+     * @param string $imageSlug
+     * @param CacheInterface $cache
+     * @return void
+     */
+    protected function removeLock(string $imageSlug, CacheInterface $cache): void
+    {
+        $cache->delete('locked-' . $imageSlug);
     }
 
     /**
