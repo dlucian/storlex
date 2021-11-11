@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Main bootstrapping entry-point for the application.
+ * Main bootstrap/entry-point for the application.
  */
 
 use App\Config;
@@ -23,6 +23,7 @@ if (strpos(phpversion(), '7.4.') === false) {
 // Only web-bound requests should be handled by the router.
 if (!empty($_SERVER['REQUEST_URI']) && !empty($_SERVER['REQUEST_METHOD'])) {
     $request = new Request();
+
     // Routing configuration
     $router = new Router();
     $router->get('/', function() {
@@ -43,6 +44,7 @@ if (!empty($_SERVER['REQUEST_URI']) && !empty($_SERVER['REQUEST_METHOD'])) {
     $router->get('/img/{image}', function($params) use ($request) {
         return (new \App\Controllers\ImagesController())->retrieve($params['image'], $request);
     });
+
     // Handle & render the request
     Response::render(
         $router->handle($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI'])

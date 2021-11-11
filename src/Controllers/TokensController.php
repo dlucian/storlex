@@ -61,6 +61,12 @@ class TokensController extends BaseController
         return $this->successJson();
     }
 
+    /**
+     * Validate the input
+     *
+     * @param Request $request
+     * @return Response|null
+     */
     protected function validateInput(Request $request): ?Response
     {
         if ($adminRequest = $this->validateAdminRequest($request)) {
