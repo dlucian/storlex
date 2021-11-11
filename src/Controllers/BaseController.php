@@ -24,4 +24,16 @@ abstract class BaseController
             ['Content-Type' => 'application/json']
         );
     }
+
+    /**
+     * Generic error message
+     */
+    public function errorJson(int $code, string $message = null): Response
+    {
+        return new Response(
+            $code,
+            ['success' => false, 'message' => $message],
+            ['Content-Type' => 'application/json']
+        );
+    }
 }

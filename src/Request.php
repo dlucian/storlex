@@ -117,10 +117,13 @@ class Request
 
     /**
      * @param string $file
-     * @return array<string,string|int>
+     * @return array<string,string|int>|null
      */
-    public function getFile(string $file): array
+    public function getFile(string $file): ?array
     {
+        if (!isset($this->files[$file])) {
+            return null;
+        }
         return [
             'name' => $this->files[$file]['name'],
             'file' => $this->files[$file]['tmp_name'],

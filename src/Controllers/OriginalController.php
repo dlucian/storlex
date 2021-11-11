@@ -30,6 +30,10 @@ class OriginalController extends BaseController
         }
 
         $file = $request->getFile('file');
+        if ($file === null) {
+            return $this->errorJson(422, 'No file was uploaded');
+        }
+
         DriverManager::imageStorage()->save($file);
         return $this->successJson(
             sprintf('File \'%s\' uploaded successfully', $file['name'])
