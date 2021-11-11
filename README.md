@@ -199,6 +199,7 @@ To start a debugging session of the tests, run:
 ## To do
 
 - [ ] Redis cache driver
+- [ ] Request throttle support to prevent DDOS attacks
 - [ ] Environment support, to hide errors in production
 - [ ] Logging of requests, errors, warnings, etc.
 - [ ] `/img` serving switch for crop/no-crop
