@@ -19,16 +19,18 @@ This is vanilla PHP image resizing, caching and serving server.
 ### Under the hood
 
 * [PSR-12](https://www.php-fig.org/psr/psr-12) compliant codebase
-* [PSR-16](https://www.php-fig.org/psr/psr-16)-similar cache drivers
 * [phpstan](https://phpstan.org/)-checked codebase (level 9, maximum)
 * [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer#readme)-checked codebase (syntax)
+* driver design pattern for storage, image processing and caching features
 * test-covered codebase (unit tests)
 
 ## Requirements
 
 * PHP 7.4 (default on Ubuntu 20.04 LTS)
 * PDO (PHP Extension)
+* A [PDO-supported database](https://www.php.net/manual/en/pdo.drivers.php) (MySQL, PostgreSQL, SQLite, SQLite3, Oracle, MS SQL Server, IBM DB2, IBM Cloudant, MongoDB, CouchDB, etc.)
 * GD2 (PHP Extension)
+* [Composer](https://getcomposer.org)
 
 ## Overview
 

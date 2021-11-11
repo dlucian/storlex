@@ -85,21 +85,6 @@ class FileSystem extends ImageCache
         return true;
     }
 
-    public function getMultiple($keys, $default = null)
-    {
-        throw new \Exception('Not implemented');
-    }
-
-    public function setMultiple($values, $ttl = null)
-    {
-        throw new \Exception('Not implemented');
-    }
-
-    public function deleteMultiple($keys)
-    {
-        throw new \Exception('Not implemented');
-    }
-
     public function has($key, string $tag = '')
     {
         return file_exists($this->getCacheKey($key, $tag));
