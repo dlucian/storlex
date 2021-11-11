@@ -66,7 +66,7 @@ There are two types of tokens:
 
 For simplicity, tokens can be any alphanumeric string.
 
-First, ensure you have at least one `ADMIN_TOKEN[]` in your `config.php`. The ADMIN_TOKEN in an
+First, ensure you have at least one `ADMIN_TOKEN[]` in your `config.php`. The `ADMIN_TOKEN` is an
 array to support easy token rotation.
 
 The following operations require the `ADMIN_TOKEN` to be set and sent via the `Authorization` header:

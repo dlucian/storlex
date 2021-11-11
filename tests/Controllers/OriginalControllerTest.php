@@ -149,4 +149,36 @@ class OriginalControllerTest extends TestCase
         $this->assertFalse($cache->has('balloons.jpg-300x200.jpg', $fileName));
         $this->assertFalse($cache->has('balloons.jpg-300x150.jpg', $fileName));
     }
+
+    /** @test */
+    public function itHandlesMissingFilenameOnUpload()
+    {
+        // Arrange
+        $controller = new \App\Controllers\OriginalController();
+
+        // Act
+
+        $response = $controller->upload(
+            new Request(['HTTP_AUTHORIZATION' => 'Bearer testTOKEN'])
+        );
+
+        // Assert
+        $this->assertEquals(422, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function itHandlesMissingFilenameOnDelete()
+    {
+        // Arrange
+        $controller = new \App\Controllers\OriginalController();
+
+        // Act
+
+        $response = $controller->delete(
+            new Request(['HTTP_AUTHORIZATION' => 'Bearer testTOKEN'])
+        );
+
+        // Assert
+        $this->assertEquals(422, $response->getStatusCode());
+    }
 }
