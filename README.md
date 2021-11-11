@@ -28,7 +28,7 @@ This is vanilla PHP image resizing, caching and serving server.
 
 * PHP 7.4 (default on Ubuntu 20.04 LTS)
 * PDO (PHP Extension)
-* A [PDO-supported database](https://www.php.net/manual/en/pdo.drivers.php) (MySQL, PostgreSQL, SQLite, SQLite3, Oracle, MS SQL Server, IBM DB2, IBM Cloudant, MongoDB, CouchDB, etc.)
+* A [PDO-supported database](https://www.php.net/manual/en/pdo.drivers.php) (MySQL, PostgreSQL, SQLite, Oracle, MS SQL Server, IBM DB2, Firebird etc.)
 * GD2 (PHP Extension)
 * [Composer](https://getcomposer.org)
 
