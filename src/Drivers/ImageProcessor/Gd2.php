@@ -2,7 +2,6 @@
 
 namespace App\Drivers\ImageProcessor;
 
-use App\Drivers\ProcessorInterface;
 use App\Exceptions\ProcessingException;
 use App\Exceptions\UnsupportedFormatException;
 

@@ -4,9 +4,6 @@ namespace App\Controllers;
 
 use App\Drivers\CacheInterface;
 use App\Drivers\DriverManager;
-use App\Drivers\ImageCache\ImageCache;
-use App\Drivers\ImageProcessor\ImageProcessor;
-use App\Drivers\ImageStorage\ImageStorage;
 use App\Drivers\ProcessorInterface;
 use App\Drivers\StorageInterface;
 use App\Request;
