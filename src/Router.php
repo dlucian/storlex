@@ -149,15 +149,15 @@ class Router
         $parsedUrl = parse_url(Sanitize::url($url));
 
         if ($parsedUrl === false || !array_key_exists('path', $parsedUrl)) {
-            return new Response(400, 'Bad request');
+            return new Response(400, 'Bad request', ['Content-Type' => 'application/json']);
         }
 
         $matched = $this->match($parsedUrl['path'], $method);
         if ($matched === null) {
-            return new Response(404, 'Not found');
+            return new Response(404, 'Not found', ['Content-Type' => 'application/json']);
         }
         if (!is_callable($matched['callback'])) {
-            return new Response(500, 'Internal server error');
+            return new Response(500, 'Internal server error', ['Content-Type' => 'application/json']);
         }
         return $matched['callback']($matched['params']);
     }

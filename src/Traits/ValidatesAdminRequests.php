@@ -23,19 +23,19 @@ trait ValidatesAdminRequests
     protected function validateAdminRequest(Request $request)
     {
         if (empty($request->server('HTTP_AUTHORIZATION'))) {
-            return new Response(401, 'No authorization header provided');
+            return new Response(401, 'No authorization header provided', ['Content-Type' => 'application/json']);
         }
 
         if (substr($request->server('HTTP_AUTHORIZATION'), 0, 6) !== 'Bearer') {
-            return new Response(401, 'Invalid authorization header');
+            return new Response(401, 'Invalid authorization header', ['Content-Type' => 'application/json']);
         }
 
         if (empty($_ENV['ADMIN_TOKEN'])) {
-            return new Response(500, 'No allowed tokens configured');
+            return new Response(500, 'No allowed tokens configured', ['Content-Type' => 'application/json']);
         }
 
         if (!in_array(substr($request->server('HTTP_AUTHORIZATION'), 7), $_ENV['ADMIN_TOKEN'])) {
-            return new Response(401, 'Invalid token');
+            return new Response(401, 'Invalid token', ['Content-Type' => 'application/json']);
         }
 
         return null;

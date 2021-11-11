@@ -41,7 +41,7 @@ class ImagesController extends BaseController
             return $tokenRequest;
         }
         if (strpos($imageSlug, '/') !== false || strpos($imageSlug, '\\') !== false) {
-            return new Response(400, 'Invalid image slug');
+            return $this->errorJson(400, 'Invalid image slug');
         }
 
         // Load drivers
@@ -57,7 +57,7 @@ class ImagesController extends BaseController
 
         $attributes = $this->expandAttributes($imageSlug);
         if ($attributes === null) {
-            return new Response(400, 'Bad request');
+            return $this->errorJson(400, 'Bad request');
         }
 
         // Is it being processed in another thread/job?
@@ -68,7 +68,7 @@ class ImagesController extends BaseController
         // Do we have it cached?
         if ($cached = $cache->get($imageSlug, (string)$attributes['name'])) {
             if (!is_string($cached)) {
-                return new Response(500, 'Cache error');
+                return $this->errorJson(500, 'Cache error');
             }
             return new Response(
                 200,
@@ -82,7 +82,7 @@ class ImagesController extends BaseController
         // Retrieve image
         $image = $storage->load((string)$attributes['name']);
         if ($image === null) {
-            return new Response(404, 'Not found');
+            return $this->error404();
         }
 
         // Process image
@@ -92,10 +92,10 @@ class ImagesController extends BaseController
                 ->render((string)$attributes['extension']);
 
             if ($processed === null) {
-                return new Response(500, 'Processing error');
+                return $this->errorJson(500, 'Processing error');
             }
         } catch (\Exception $e) {
-            return new Response(500, 'Processing error: ' . $e->getMessage());
+            return $this->errorJson(500, 'Processing error: ' . $e->getMessage());
         }
 
         $cache->set($imageSlug, $processed, (string)$attributes['name']);

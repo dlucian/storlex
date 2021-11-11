@@ -15,8 +15,9 @@ abstract class BaseController
      * Generic success response
      *
      * @param string $message Optional success message
+     * @return Response
      */
-    public function successJson(string $message = null): Response
+    protected function successJson(string $message = null): Response
     {
         return new Response(
             200,
@@ -27,13 +28,27 @@ abstract class BaseController
 
     /**
      * Generic error message
+     *
+     * @param int $code
+     * @param string $message
+     * @return Response
      */
-    public function errorJson(int $code, string $message = null): Response
+    protected function errorJson(int $code, string $message = null): Response
     {
         return new Response(
             $code,
             ['success' => false, 'message' => $message],
             ['Content-Type' => 'application/json']
         );
+    }
+
+    /**
+     * Return a 404 response
+     *
+     * @return Response
+     */
+    protected function error404(): Response
+    {
+        return $this->errorJson(404, 'Not found');
     }
 }

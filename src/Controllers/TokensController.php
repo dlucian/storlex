@@ -31,7 +31,7 @@ class TokensController extends BaseController
         $inputToken = $request->input('token');
 
         if (empty($inputToken)) {
-            return new Response(400, 'No token provided');
+            return $this->errorJson(400, 'No token provided');
         }
 
         (new Token($inputToken))->grant();
@@ -53,7 +53,7 @@ class TokensController extends BaseController
         $inputToken = $request->input('token');
 
         if (empty($inputToken)) {
-            return new Response(400, 'No token provided');
+            return $this->errorJson(400, 'No token provided');
         }
 
         (new Token($inputToken))->revoke();
@@ -70,19 +70,11 @@ class TokensController extends BaseController
         $inputToken = $request->input('token');
 
         if (empty($inputToken)) {
-            return new Response(
-                422,
-                ['success' => false, 'message' => 'No token provided'],
-                ['Content-Type' => 'application/json']
-            );
+            return $this->errorJson(422, 'No token provided');
         }
 
         if (!is_string($inputToken)) {
-            return new Response(
-                422,
-                ['success' => false, 'message' => 'Invalid token provided'],
-                ['Content-Type' => 'application/json']
-            );
+            return $this->errorJson(422, 'Invalid token provided');
         }
 
         return null;
