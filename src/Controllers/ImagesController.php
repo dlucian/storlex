@@ -60,6 +60,14 @@ class ImagesController extends BaseController
             return $this->errorJson(400, 'Bad request');
         }
 
+        if (!isset($_ENV['ALLOWED_SIZE'])) {
+            return $this->errorJson(500, 'Missing ALLOWED_SIZE configuration');
+        }
+
+        if (!in_array(sprintf('%dx%d', $attributes['width'], $attributes['height']), $_ENV['ALLOWED_SIZE'])) {
+            return $this->errorJson(404, 'Bad request');
+        }
+
         // Is it being processed in another thread/job?
         while ($this->isLocked($imageSlug, $cache)) {
             sleep(1);

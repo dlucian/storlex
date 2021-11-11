@@ -17,6 +17,8 @@ class ImagesControllerTest extends TestCase
         (new Token('imageTOKEN'))->grant();
 
         DriverManager::imageCache()->clear();
+
+        $_ENV['ALLOWED_SIZE'] = ["300x200", "300x150", "1024x800", "400x400", "800x800"];
     }
 
     /** @test */
@@ -184,5 +186,20 @@ class ImagesControllerTest extends TestCase
 
         // Assert
         $this->assertEquals(400, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function itReturns404IfRequestedSiteNotAllowed()
+    {
+        // Arrange
+        $fileName = 'balloons.jpg';
+        $request = new Request(['HTTP_AUTHORIZATION' => 'Bearer imageTOKEN'], [], [], [], []);
+
+        // Act
+        $controller = new \App\Controllers\ImagesController();
+        $response = $controller->retrieve('balloons.jpg-310x250.jpg', $request);
+
+        // Assert
+        $this->assertEquals(404, $response->getStatusCode());
     }
 }

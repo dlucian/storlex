@@ -6,4 +6,14 @@ IMAGE_STORAGE_DRIVER = "file"
 IMAGE_CACHE_DRIVER = "file"
 IMAGE_PROCESSOR_DRIVER = "gd2"
 
-ADMIN_TOKEN[] = "bazinga"
+; These tokens allow client token granting/revoking
+; and image upload/deleting
+ADMIN_TOKEN[] = "sheldon"
+
+; For security reasons, only the following resolutions
+; are allowed for resize, please add any others here
+ALLOWED_SIZE[] = "300x200"
+ALLOWED_SIZE[] = "300x150"
+ALLOWED_SIZE[] = "1024x800"
+ALLOWED_SIZE[] = "400x400"
+ALLOWED_SIZE[] = "800x800"
