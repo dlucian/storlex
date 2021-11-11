@@ -199,7 +199,8 @@ To start a debugging session of the tests, run:
 - [ ] Redis cache driver
 - [ ] Environment support, to hide errors in production
 - [ ] Logging of requests, errors, warnings, etc.
-- [ ] /img switch for crop/no-crop
+- [ ] `/img` serving switch for crop/no-crop
+- [ ] `/img` serving quality setting (ex. `q80`)
 - [ ] resize on a single axis (for example `800x` or `x600`)
 - [ ] broken photo placeholder (when a photo cannot be served)
 
