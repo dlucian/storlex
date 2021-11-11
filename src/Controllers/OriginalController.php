@@ -58,8 +58,11 @@ class OriginalController extends BaseController
         }
 
         DriverManager::imageStorage()->remove($file);
-            return $this->successJson(
-                sprintf('File \'%s\' deleted successfully', $file)
-            );
+
+        DriverManager::imageCache()->deleteTag($file);
+
+        return $this->successJson(
+            sprintf('File \'%s\' deleted successfully', $file)
+        );
     }
 }

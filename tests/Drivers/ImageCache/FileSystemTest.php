@@ -77,4 +77,41 @@ class FileSystemTest extends TestCase
         $this->assertFalse($fs->has($key2));
         $this->assertFalse($fs->has($key3));
     }
+
+    /** @test */
+    public function itSetsAndGetsAnItemWithATag()
+    {
+        // Arrange
+        $fs = new FileSystem();
+        $key = 'foo$%^&*/bar' . uniqid(md5((string)time()), true);
+        $tag = uniqid('key', true);
+
+        // Act
+        $fs->set($key, 'cachedValue', $tag);
+        $item = $fs->get($key, $tag);
+
+        // Assert
+        $this->assertEquals('cachedValue', $item);
+        $this->assertTrue($fs->has($key, $tag));
+    }
+
+    /** @test */
+    public function itClearsMultipleKeysByTag()
+    {
+        // Arrange
+        $fs = new FileSystem();
+        $key1 = 'foo$%^&*/bar' . uniqid(md5((string)time()), true);
+        $key2 = 'some>thing' . uniqid(md5((string)time()), true);
+        $tag = uniqid('tag-', true);
+        $fs->set($key1, 'cachedValue1', $tag);
+        $fs->set($key2, 'cachedValue2', $tag);
+
+        // Act
+        $item = $fs->deleteTag($tag);
+
+        // Assert
+        $this->assertTrue($item);
+        $this->assertFalse($fs->has($key1, $tag));
+        $this->assertFalse($fs->has($key2, $tag));
+    }
 }

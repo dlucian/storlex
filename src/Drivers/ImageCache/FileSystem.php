@@ -24,38 +24,64 @@ class FileSystem extends ImageCache
         return $this->cachePath;
     }
 
-    public function get($key, $default = null)
+    public function get($key, string $tag = '', $default = null)
     {
-        if (!file_exists($this->cachePath . urlencode($key) . '.cache')) {
+        if (!file_exists($this->getCacheKey($key, $tag))) {
             return null;
         }
-        return file_get_contents($this->cachePath . urlencode($key) . '.cache');
+        return file_get_contents($this->getCacheKey($key, $tag)) ?: $default;
     }
 
-    public function set($key, $value, $ttl = null)
+    public function set($key, $value, string $tag = '', $ttl = null)
     {
-        file_put_contents($this->cachePath . urlencode($key) . '.cache', $value);
+        $directory = dirname($this->getCacheKey($key, $tag));
+        if (!file_exists($directory)) {
+            mkdir($directory, 0777, true);
+        }
+        file_put_contents($this->getCacheKey($key, $tag), $value);
         return true;
     }
 
-    public function delete($key)
+    public function delete($key, string $tag = '')
     {
         if ($this->has($key)) {
-            unlink($this->cachePath . urlencode($key) . '.cache');
+            unlink($this->getCacheKey($key, $tag));
         }
+        return true;
+    }
+
+    public function deleteTag(string $tag)
+    {
+        $this->clearTagFolder($this->getCachePath() . $tag . '.tag');
+
         return true;
     }
 
     public function clear()
     {
-        $files = glob($this->getCachePath() . '*');
+        $folders = glob($this->getCachePath() . '{.[!.],}*', GLOB_BRACE | GLOB_ONLYDIR);
+        if (is_array($folders)) {
+            foreach ($folders as $folder) {
+                $this->clearTagFolder($folder);
+            }
+        }
+        return true;
+    }
+
+    protected function clearTagFolder(string $folder): bool
+    {
+        $files = glob($folder . '/*.cache');
         if (is_array($files)) {
             foreach ($files as $file) {
-                if (is_file($file)) {
+                if (is_file($file) && substr($file, -6) === '.cache') {
                     unlink($file);
                 }
             }
+            if (is_dir($folder) && substr($folder, -4) === '.tag') {
+                rmdir($folder);
+            }
         }
+
         return true;
     }
 
@@ -74,8 +100,13 @@ class FileSystem extends ImageCache
         throw new \Exception('Not implemented');
     }
 
-    public function has($key)
+    public function has($key, string $tag = '')
     {
-        return file_exists($this->cachePath . urlencode($key) . '.cache');
+        return file_exists($this->getCacheKey($key, $tag));
+    }
+
+    protected function getCacheKey(string $key, string $tag = ''): string
+    {
+        return $this->cachePath . urlencode($tag) . '.tag/' . urlencode($key) . '.cache';
     }
 }

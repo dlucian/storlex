@@ -155,4 +155,34 @@ class ImagesControllerTest extends TestCase
         // Assert
         $this->assertEquals(401, $response->getStatusCode());
     }
+
+    /** @test */
+    public function itDoesNotAllowForwardSlashesInImageNames()
+    {
+        // Arrange
+        $fileName = 'some-inexisting/-image.jpg';
+        $request = new Request(['HTTP_AUTHORIZATION' => 'Bearer imageTOKEN'], [], [], [], []);
+
+        // Act
+        $controller = new \App\Controllers\ImagesController();
+        $response = $controller->retrieve($fileName . '-300x200.jpg', $request);
+
+        // Assert
+        $this->assertEquals(400, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function itDoesNotAllowBackSlashesInImageNames()
+    {
+        // Arrange
+        $fileName = 'some-inexisting\-image.jpg';
+        $request = new Request(['HTTP_AUTHORIZATION' => 'Bearer imageTOKEN'], [], [], [], []);
+
+        // Act
+        $controller = new \App\Controllers\ImagesController();
+        $response = $controller->retrieve($fileName . '-300x200.jpg', $request);
+
+        // Assert
+        $this->assertEquals(400, $response->getStatusCode());
+    }
 }

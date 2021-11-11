@@ -37,6 +37,10 @@ class ImagesController extends BaseController
         if ($tokenRequest = $this->validateTokenRequest($request)) {
             return $tokenRequest;
         }
+        if (strpos($imageSlug, '/') !== false || strpos($imageSlug, '\\') !== false) {
+            return new Response(400, 'Invalid image slug');
+        }
+
         // Load drivers
         if (is_null($storage)) {
             $storage = DriverManager::imageStorage();
@@ -54,7 +58,7 @@ class ImagesController extends BaseController
         }
 
         // Do we have it cached?
-        if ($cached = $cache->get($imageSlug)) {
+        if ($cached = $cache->get($imageSlug, (string)$attributes['name'])) {
             if (!is_string($cached)) {
                 return new Response(500, 'Cache error');
             }
@@ -84,7 +88,7 @@ class ImagesController extends BaseController
             return new Response(500, 'Processing error: ' . $e->getMessage());
         }
 
-        $cache->set($imageSlug, $processed);
+        $cache->set($imageSlug, $processed, (string)$attributes['name']);
 
         return new Response(
             200,

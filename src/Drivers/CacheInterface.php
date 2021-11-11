@@ -15,13 +15,14 @@ interface CacheInterface
      * @throws \App\Exceptions\InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function get($key, $default = null);
+    public function get($key, string $tag = '', $default = null);
 
     /**
      * Persists data in the cache, uniquely referenced by a key with an optional expiration TTL time.
      *
      * @param string                 $key   The key of the item to store.
      * @param mixed                  $value The value of the item to store. Must be serializable.
+     * @param string                 $tag   A tag under which the item is stored.
      * @param null|int|\DateInterval $ttl   Optional. The TTL value of this item. If no value is sent and
      *                                      the driver supports TTL then the library may set a default value
      *                                      for it or let the driver take care of that.
@@ -31,7 +32,7 @@ interface CacheInterface
      * @throws \App\Exceptions\InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function set($key, $value, $ttl = null);
+    public function set($key, $value, string $tag = '', $ttl = null);
 
     /**
      * Delete an item from the cache by its unique key.
@@ -43,7 +44,7 @@ interface CacheInterface
      * @throws \App\Exceptions\InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function delete($key);
+    public function delete($key, string $tag = '');
 
     /**
      * Wipes clean the entire cache's keys.
@@ -97,6 +98,14 @@ interface CacheInterface
     public function deleteMultiple($keys);
 
     /**
+     * Delete multiple keys by tag.
+     *
+     * @param string $tag
+     * @return bool
+     */
+    public function deleteTag(string $tag);
+
+    /**
      * Determines whether an item is present in the cache.
      *
      * NOTE: It is recommended that has() is only to be used for cache warming type purposes
@@ -111,5 +120,5 @@ interface CacheInterface
      * @throws \App\Exceptions\InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function has($key);
+    public function has($key, string $tag = '');
 }

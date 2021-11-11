@@ -2,6 +2,7 @@
 
 namespace Tests\Controllers;
 
+use App\Drivers\DriverManager;
 use App\Drivers\ImageStorage\FileSystem;
 use App\Request;
 use PHPUnit\Framework\TestCase;
@@ -29,13 +30,13 @@ class OriginalControllerTest extends TestCase
             [],
             [],
             [
-            'file' => [
-                'name' => $fileName,
-                'type' => 'image/jpeg',
-                'tmp_name' => $tempPath,
-                'error' => 0,
-                'size' => filesize($tempPath),
-            ],
+                'file' => [
+                    'name' => $fileName,
+                    'type' => 'image/jpeg',
+                    'tmp_name' => $tempPath,
+                    'error' => 0,
+                    'size' => filesize($tempPath),
+                ],
             ]
         );
 
@@ -111,5 +112,41 @@ class OriginalControllerTest extends TestCase
 
         // Assert
         $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function itDeletesTheCachedImagesWhenDeletingTheOriginal()
+    {
+        // Arrange
+        $fileName = 'balloons.jpg';
+        $fs = DriverManager::imageStorage();
+        $fs->save([
+            'name' => $fileName,
+            'file' => ROOT . '/tests/' . $fileName,
+            'size' => filesize(ROOT . '/tests/' . $fileName),
+            'type' => 'image/jpeg',
+        ]);
+        $request = new Request(['HTTP_AUTHORIZATION' => 'Bearer imageTOKEN'], [], [], [], []);
+        $cache = DriverManager::imageCache();
+        $cache->clear();
+
+        // Act / Assert
+        $controller = new \App\Controllers\ImagesController();
+        $controller->retrieve($fileName . '-300x200.jpg', $request);
+        $controller->retrieve($fileName . '-300x150.jpg', $request);
+
+        // We have the cached images
+        $this->assertTrue($cache->has('balloons.jpg-300x200.jpg', $fileName));
+        $this->assertTrue($cache->has('balloons.jpg-300x150.jpg', $fileName));
+
+        // Delete the original
+        $controller = new \App\Controllers\OriginalController();
+        $response = $controller->delete(
+            new Request(['HTTP_AUTHORIZATION' => 'Bearer testTOKEN'], [], ['filename' => $fileName], [])
+        );
+
+        // We don't have the cached images
+        $this->assertFalse($cache->has('balloons.jpg-300x200.jpg', $fileName));
+        $this->assertFalse($cache->has('balloons.jpg-300x150.jpg', $fileName));
     }
 }
